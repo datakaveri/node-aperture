@@ -43,6 +43,7 @@ RegularExpressionLiteral \/{RegularExpressionBody}\/{RegularExpressionFlags}
 "ANYTHING"      return 'ANYTHING';
 
 "IN"            return 'IN';
+"MATCH"         return 'MATCH';
 
 "::"            return '::';
 ","             return ',';
@@ -296,6 +297,16 @@ Condition
             $$ = [ op, lhs, rhs ];
         }
     | Lhs IN '(' CommaSeparatedList ')'
+        {
+            var lhs = $1;
+            var op = $2.toLowerCase();
+            var rhs = $4;
+            rhs.forEach(function (i) {
+                yy.validate('=', lhs.name, i, lhs.type);
+            });
+            $$ = [ op, lhs, rhs ];
+        }
+    | Lhs MATCH '(' CommaSeparatedList ')'
         {
             var lhs = $1;
             var op = $2.toLowerCase();
