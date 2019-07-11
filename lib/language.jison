@@ -45,6 +45,8 @@ RegularExpressionLiteral \/{RegularExpressionBody}\/{RegularExpressionFlags}
 "IN"            return 'IN';
 "MATCH"         return 'MATCH';
 
+"CONSUMER-IN-GROUP"         return 'CONSUMER-IN-GROUP';
+
 "::"            return '::';
 ","             return ',';
 "("             return '(';
@@ -313,6 +315,16 @@ Condition
             var rhs = $4;
             rhs.forEach(function (i) {
                 yy.validate('=', lhs.name, i, lhs.type);
+            });
+            $$ = [ op, lhs, rhs ];
+        }
+    | CONSUMER-IN-GROUP '(' CommaSeparatedList ')'
+        {
+            var lhs = '';
+            var op = $1.toLowerCase();
+            var rhs = $3;
+            rhs.forEach(function (i) {
+                yy.validate('=', 'groups', i, 'string');
             });
             $$ = [ op, lhs, rhs ];
         }
