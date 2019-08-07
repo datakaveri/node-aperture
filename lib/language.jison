@@ -44,6 +44,7 @@ RegularExpressionLiteral \/{RegularExpressionBody}\/{RegularExpressionFlags}
 
 "IN"            return 'IN';
 "MATCH"         return 'MATCH';
+"FOR"         	return 'FOR';
 
 "CONSUMER-IN-GROUP"         return 'CONSUMER-IN-GROUP';
 
@@ -89,40 +90,44 @@ RegularExpressionLiteral \/{RegularExpressionBody}\/{RegularExpressionFlags}
 %%
 
 Rule
-    : List Effect List List Conditions EOF
+    : List Effect List List Conditions For EOF
         {
             return {
                 principals: $1,
                 effect: $2,
                 actions: $3,
                 resources: $4,
-                conditions: $5
+                conditions: $5,
+		expiry: $6
             };
         }
-    | List Effect List Conditions EOF // implied resources
+    | List Effect List Conditions For EOF // implied resources
         {
             return {
                 principals: $1,
                 effect: $2,
                 actions: $3,
-                conditions: $4
+                conditions: $4,
+		for: $5
             };
         }
-    | Effect List List Conditions EOF // implied principals
+    | Effect List List Conditions For EOF // implied principals
         {
             return {
                 effect: $1,
                 actions: $2,
                 resources: $3,
-                conditions: $4
+                conditions: $4,
+		for: $5
             };
         }
-    | Effect List Conditions EOF // implied principals and resources
+    | Effect List Conditions For EOF // implied principals and resources
         {
             return {
                 effect: $1,
                 actions: $2,
-                conditions: $3
+                conditions: $3,
+		for: $4
             };
         }
     ;
@@ -288,6 +293,65 @@ NotCondition
         }
     | Condition
     ;
+
+For
+    : FOR String String 
+        {
+            var op = $1.toLowerCase();
+            var time = parseInt($2,10); 
+            var units = $3.toLowerCase();
+            
+            if (time < 0)
+		CHECK_YOUR_RULE ("time must be > 0");	
+
+            switch (units)
+            {
+		case 'second':
+		case 'seconds':
+			time = time;
+			break;
+
+		case 'minute':
+		case 'minutes':
+			time = time*60;
+			break;
+
+		case 'hour':
+		case 'hours':
+			time = time*60*60;
+			break;
+
+		case 'day':
+		case 'days':
+			time = time*60*60*24;
+			break;
+
+		case 'week':
+		case 'weeks':
+			time = time*60*60*24*7;
+			break;
+
+		case 'month':
+		case 'months':
+			time = time*60*60*24*30;
+			break;
+
+		case 'year':
+		case 'years':
+			time = time*60*60*24*365;
+			break;
+
+		default:
+			CHECK_YOUR_RULE ("Unit for time must be seconds, minutes, etc.");	
+            }
+
+            $$ = time; 
+        }
+     |	// empty
+	{
+		$$ = 3600; // 1 hour 
+	}
+     ;
 
 Condition
     : Lhs String String
