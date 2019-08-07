@@ -295,6 +295,9 @@ case 25:
 			CHECK_YOUR_RULE ("Unit for time must be seconds, minutes, etc.");	
             }
 
+	    if (time > 31536000)
+		CHECK_YOUR_RULE("Maximum expiry is 1 year");
+
             this.$ = time; 
         
 break;
