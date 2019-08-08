@@ -90,7 +90,7 @@ RegularExpressionLiteral \/{RegularExpressionBody}\/{RegularExpressionFlags}
 %%
 
 Rule
-    : List Effect List List Conditions For EOF
+    : List Effect List List For Conditions EOF
         {
             return {
                 principals: $1,
@@ -101,7 +101,7 @@ Rule
 		expiry: $6
             };
         }
-    | List Effect List Conditions For EOF // implied resources
+    | List Effect List For Conditions EOF // implied resources
         {
             return {
                 principals: $1,
@@ -111,7 +111,7 @@ Rule
 		for: $5
             };
         }
-    | Effect List List Conditions For EOF // implied principals
+    | Effect List List For Conditions EOF // implied principals
         {
             return {
                 effect: $1,
@@ -121,7 +121,7 @@ Rule
 		for: $5
             };
         }
-    | Effect List Conditions For EOF // implied principals and resources
+    | Effect List For Conditions EOF // implied principals and resources
         {
             return {
                 effect: $1,
