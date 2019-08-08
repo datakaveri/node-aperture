@@ -97,8 +97,8 @@ Rule
                 effect: $2,
                 actions: $3,
                 resources: $4,
-                conditions: $5,
-		expiry: $6
+		expiry: $5,
+                conditions: $6
             };
         }
     | List Effect List For Conditions EOF // implied resources
@@ -107,8 +107,8 @@ Rule
                 principals: $1,
                 effect: $2,
                 actions: $3,
-                conditions: $4,
-		for: $5
+		for: $4,
+                conditions: $4
             };
         }
     | Effect List List For Conditions EOF // implied principals
@@ -117,8 +117,8 @@ Rule
                 effect: $1,
                 actions: $2,
                 resources: $3,
-                conditions: $4,
-		for: $5
+		for: $4,
+                conditions: $5
             };
         }
     | Effect List For Conditions EOF // implied principals and resources
@@ -126,8 +126,8 @@ Rule
             return {
                 effect: $1,
                 actions: $2,
-                conditions: $3,
-		for: $4
+		for: $3,
+                conditions: $4
             };
         }
     ;

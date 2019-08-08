@@ -89,8 +89,8 @@ case 1:
                 effect: $$[$0-5],
                 actions: $$[$0-4],
                 resources: $$[$0-3],
-                conditions: $$[$0-2],
-		expiry: $$[$0-1]
+		expiry: $$[$0-2],
+                conditions: $$[$0-1]
             };
         
 break;
@@ -99,8 +99,8 @@ case 2:
                 principals: $$[$0-5],
                 effect: $$[$0-4],
                 actions: $$[$0-3],
-                conditions: $$[$0-2],
-		for: $$[$0-1]
+		for: $$[$0-2],
+                conditions: $$[$0-2]
             };
         
 break;
@@ -109,8 +109,8 @@ case 3:
                 effect: $$[$0-5],
                 actions: $$[$0-4],
                 resources: $$[$0-3],
-                conditions: $$[$0-2],
-		for: $$[$0-1]
+		for: $$[$0-2],
+                conditions: $$[$0-1]
             };
         
 break;
@@ -118,8 +118,8 @@ case 4:
             return {
                 effect: $$[$0-4],
                 actions: $$[$0-3],
-                conditions: $$[$0-2],
-		for: $$[$0-1]
+		for: $$[$0-2],
+                conditions: $$[$0-1]
             };
         
 break;
