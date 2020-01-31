@@ -90,7 +90,20 @@ RegularExpressionLiteral \/{RegularExpressionBody}\/{RegularExpressionFlags}
 %%
 
 Rule
-    : List Effect List List For Conditions EOF
+    : List Effect List List For At Conditions EOF
+        {
+            return {
+                principals: $1,
+                effect: $2,
+                actions: $3,
+                resources: $4,
+		expiry: $5,
+                price: $6,
+                conditions: $7
+            };
+        }
+
+    | List Effect List List For Conditions EOF
         {
             return {
                 principals: $1,
@@ -101,6 +114,20 @@ Rule
                 conditions: $6
             };
         }
+
+    | List Effect List For At Conditions EOF // implied resources
+        {
+            return {
+                principals: $1,
+                effect: $2,
+                actions: $3,
+		for: $4,
+		price : $5,
+                conditions: $6
+            };
+        }
+
+
     | List Effect List For Conditions EOF // implied resources
         {
             return {
@@ -111,6 +138,19 @@ Rule
                 conditions: $5
             };
         }
+
+    | Effect List List For At Conditions EOF // implied principals
+        {
+            return {
+                effect: $1,
+                actions: $2,
+                resources: $3,
+		for: $4,
+		price: $5,
+                conditions: $6
+            };
+        }
+
     | Effect List List For Conditions EOF // implied principals
         {
             return {
@@ -121,6 +161,18 @@ Rule
                 conditions: $5
             };
         }
+
+    | Effect List For At Conditions EOF // implied principals and resources
+        {
+            return {
+                effect: $1,
+                actions: $2,
+		for: $3,
+		price : $4,
+                conditions: $5
+            };
+        }
+
     | Effect List For Conditions EOF // implied principals and resources
         {
             return {
@@ -353,6 +405,29 @@ For
      |	// empty
 	{
 		$$ = 3600; // 1 hour 
+	}
+     ;
+
+At
+    : AT String String 
+        {
+            var price		= parseFloat($2); 
+            var currency	= $2.toLowerCase();
+            
+            if (isNaN(price) || price < 0)
+		CHECK_YOUR_RULE ("price must be >= 0.00");	
+
+            if (currency !== "inr")
+		CHECK_YOUR_RULE ("currency must be INR");	
+
+	    if (price > 10000)
+		CHECK_YOUR_RULE("Maximum cost is 10000 INR");
+
+            $$ = price; 
+        }
+     |	// empty
+	{
+		$$ = 0.00; // 0 INR 
 	}
      ;
 
