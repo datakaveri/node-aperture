@@ -12,7 +12,7 @@ var parser = aperture.createParser(apertureOpts);
 var evaluator = aperture.createEvaluator(apertureOpts);
 
 var text = [
-    'Fred can read *.js when dirname = examples and sourceip = 10.0.0.0/8 at 5 inr',
+    'Fred can read *.js @ 5 inr when dirname = examples and sourceip = 10.0.0.0/8',
 ];
 
 var policies = text.map(function (t) {
