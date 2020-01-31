@@ -45,6 +45,7 @@ RegularExpressionLiteral \/{RegularExpressionBody}\/{RegularExpressionFlags}
 "IN"            return 'IN';
 "MATCH"         return 'MATCH';
 "FOR"         	return 'FOR';
+"@"         	return 'AT';
 
 "CONSUMER-IN-GROUP"         return 'CONSUMER-IN-GROUP';
 
@@ -98,20 +99,8 @@ Rule
                 actions: $3,
                 resources: $4,
 		expiry: $5,
-                price: $6,
+                at: $6,
                 conditions: $7
-            };
-        }
-
-    | List Effect List List For Conditions EOF
-        {
-            return {
-                principals: $1,
-                effect: $2,
-                actions: $3,
-                resources: $4,
-		expiry: $5,
-                conditions: $6
             };
         }
 
@@ -122,20 +111,8 @@ Rule
                 effect: $2,
                 actions: $3,
 		for: $4,
-		price : $5,
+		at: $5,
                 conditions: $6
-            };
-        }
-
-
-    | List Effect List For Conditions EOF // implied resources
-        {
-            return {
-                principals: $1,
-                effect: $2,
-                actions: $3,
-		for: $4,
-                conditions: $5
             };
         }
 
@@ -146,19 +123,8 @@ Rule
                 actions: $2,
                 resources: $3,
 		for: $4,
-		price: $5,
+		at: $5,
                 conditions: $6
-            };
-        }
-
-    | Effect List List For Conditions EOF // implied principals
-        {
-            return {
-                effect: $1,
-                actions: $2,
-                resources: $3,
-		for: $4,
-                conditions: $5
             };
         }
 
@@ -168,18 +134,8 @@ Rule
                 effect: $1,
                 actions: $2,
 		for: $3,
-		price : $4,
+		at: $4,
                 conditions: $5
-            };
-        }
-
-    | Effect List For Conditions EOF // implied principals and resources
-        {
-            return {
-                effect: $1,
-                actions: $2,
-		for: $3,
-                conditions: $4
             };
         }
     ;
@@ -411,23 +367,25 @@ For
 At
     : AT String String 
         {
-            var price		= parseFloat($2); 
-            var currency	= $2.toLowerCase();
+            var amount		= $2; 
+            var currency	= $3.toUpperCase();
             
-            if (isNaN(price) || price < 0)
-		CHECK_YOUR_RULE ("price must be >= 0.00");	
+            if (isNaN(amount))
+		CHECK_YOUR_RULE ("amount must be a number");	
 
-            if (currency !== "inr")
+	    amount = parseFloat(amount);
+
+            if (isNaN(amount) || amount < 0 || amount > 10000)
+		CHECK_YOUR_RULE ("amount must be > 0 and < 10000");	
+
+            if (currency !== "INR")
 		CHECK_YOUR_RULE ("currency must be INR");	
 
-	    if (price > 10000)
-		CHECK_YOUR_RULE("Maximum cost is 10000 INR");
-
-            $$ = price; 
+            $$ = {"amount" : amount, "currency" : currency};
         }
      |	// empty
 	{
-		$$ = 0.00; // 0 INR 
+		$$ = {"amount" : 0.00, "currency" : "INR"}; // 0 INR 
 	}
      ;
 
