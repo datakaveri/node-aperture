@@ -100,7 +100,7 @@ case 2:
                 effect: $$[$0-4],
                 actions: $$[$0-3],
 		for: $$[$0-2],
-                conditions: $$[$0-2]
+                conditions: $$[$0-1]
             };
         
 break;

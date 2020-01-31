@@ -108,7 +108,7 @@ Rule
                 effect: $2,
                 actions: $3,
 		for: $4,
-                conditions: $4
+                conditions: $5
             };
         }
     | Effect List List For Conditions EOF // implied principals
