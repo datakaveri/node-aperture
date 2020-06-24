@@ -48,6 +48,7 @@ RegularExpressionLiteral \/{RegularExpressionBody}\/{RegularExpressionFlags}
 "@"         	return 'AT';
 
 "CONSUMER-IN-GROUP"         return 'CONSUMER-IN-GROUP';
+"AUTHORIZED-BY"             return 'AUTHORIZED-BY';
 
 "::"            return '::';
 ","             return ',';
@@ -350,11 +351,11 @@ For
 			break;
 
 		default:
-			CHECK_YOUR_RULE ("Unit for time must be seconds, minutes, etc.");	
+			PLEASE_CHECK_YOUR_RULE ("Unit for time must be: 'days', 'hours', 'minutes', etc.");
             }
 
 	    if (time > 31536000)
-		CHECK_YOUR_RULE("Maximum expiry is 1 year");
+		PLEASE_CHECK_YOUR_RULE("Maximum expiry is 1 year");
 
             $$ = time; 
         }
@@ -427,6 +428,14 @@ Condition
                 yy.validate('=', 'groups', i, 'string');
             });
             $$ = [ op, lhs, rhs ];
+        }
+    | AUTHORIZED-BY '(' String ')'
+        {
+            var lhs = '';
+            var op = $1.toLowerCase();
+            var rhs = $3;
+
+            $$ = [ op, lhs , rhs];
         }
     | '(' OrCondition ')'
         {

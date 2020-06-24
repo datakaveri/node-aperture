@@ -12,7 +12,7 @@ var parser = aperture.createParser(apertureOpts);
 var evaluator = aperture.createEvaluator(apertureOpts);
 
 var text = [
-    'Fred can read *.js @ 5 inr when dirname = examples and sourceip = 10.0.0.0/8',
+    'Fred can read *.js @ 10 INR if authorized-by(telegram:user-id)',
 ];
 
 var policies = text.map(function (t) {
